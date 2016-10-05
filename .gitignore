@@ -3,7 +3,7 @@ dist/
 .tmp/
 dev/
 
-database.rules.json
+
 .firebaserc
 firebase.json
 

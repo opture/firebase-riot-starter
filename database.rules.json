@@ -1,0 +1,27 @@
+// User can write and read to his owned data. And admins can write also.
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid 
+                  || root.child('admins/' + auth.uid).exists()",
+        ".write": "$uid === auth.uid 
+                   || root.child('admins/' + auth.uid).exists()"
+      }
+    },
+    "therapists": {
+      "$uid": {
+        ".read": "($uid === auth.uid && data.exists())
+                  || root.child('admins/' + auth.uid).exists()",
+        ".write": "($uid === auth.uid && data.exists())
+                   || root.child('admins/' + auth.uid).exists()"
+      }
+    },
+    "admins": {
+      "$uid": {
+        ".read": "root.child('admins/' + auth.uid).exists()",
+        ".write": "root.child('admins/' + auth.uid).exists()"
+      }
+    }            
+  }
+}
