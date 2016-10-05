@@ -5,13 +5,14 @@
 		<span id="closeMe" onclick="{closeMe}">&#x2716;</span>
 
 		<div class="input-container">
+		<div class="error {hidden: !errorText}">{errorText}</div>
 			<div class="input-icon">
 				<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw" aria-hidden="true"></i></span>
-				<input type="text" name="email" placeholder="E-post" />
+				<input type="text" name="email" class="{error: emailMissing}" placeholder="E-post" />
 			</div>
 			<div class="input-icon">
 				<span class="input-group-addon"><i class="fa fa-key fa-fw" aria-hidden="true"></i></span>
-				<input type="password" name="password" placeholder="Lösenord" />
+				<input type="password" name="password" class="{error: pwdMissing}" placeholder="Lösenord" />
 			</div>
 		</div>		
 		<input type="submit" value="Logga in" />
@@ -22,10 +23,8 @@
 		var me  =this;
 		this.doRegister = false;
 		RiotControl.addStore(this);
-		this.errorList = [
-			{name:'email', required:true, errMess:'Ange e-post'},
-			{name:'password', required:true, errMess:'Ange lösenord'},
-		];
+
+
 
 		switchToRegister(){
 			this.doRegister = !this.doRegister;
@@ -58,6 +57,20 @@
 	  			// Handle Errors here.
 	  			var errorCode = error.code;
 	  			var errorMessage = error.message;
+	  			console.log(errorCode);
+	  			if (errorCode=='auth/invalid-email'){
+	  				me.errorText = 'Felaktig e-post adress';
+	  			}
+	  			if(errorCode=='auth/user-disabled'){
+					me.errorText = 'Användaren avaktiverad';
+	  			}
+	  			if (errorCode=='auth/user-not-found'){
+	  				me.errorText = 'Användaren finns inte';
+	  			}
+	  			if (errorCode=='auth/wrong-password'){
+	  				me.errorText = 'Fel lösenord';
+	  			}
+	  			me.update();
 	  			// ...
 			});
 		}

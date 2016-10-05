@@ -22,6 +22,14 @@ appmenu{
 				height:$top-menu-height;
 				line-height:$top-menu-height;
 				text-transform: uppercase;
+				position:relative;
+				&:not(:first-of-type):before{
+					font-size:2rem;
+					content:'•';
+					position:absolute;
+					left:-.25rem;
+				}
+			
 			}
 
 			a{

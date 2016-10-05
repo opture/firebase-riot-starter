@@ -1,19 +1,44 @@
-riot.tag2('appmenu', '<nav class="topmenu"><ul><li><a href="#">Om oss</a></li><li><a href="#">Frågor</a></li><li onclick="{showLogin}"><a href="#login">Login</a></li></ul></nav>', '', '', function(opts) {
+riot.tag2('appmenu', '<nav class="topmenu"><ul><li><a href="#">Om oss</a></li><li><a href="#">Frågor</a></li><li if="{!currentUser}" onclick="{showLogin}"><a href="#login">Login</a></li><li if="{currentUser && currentUser.displayName}">{currentUser.displayName}</li><li if="{currentUser}" onclick="{doLogout}"><a href="#login">Logga ut</a></li></ul></nav>', '', '', function(opts) {
+		var me = this.
+			currentUser = null;
 
-	  this.showLogin = function(e){
-	    e.preventDefault();
-	    console.log('SHOW_LOGIN');
-	    RiotControl.trigger('SHOW_LOGIN');
-	  }.bind(this);
+		RiotControl.addStore(this);
+
+  		this.showLogin = function(e){
+	    	e.preventDefault();
+	    	console.log('SHOW_LOGIN');
+	    	RiotControl.trigger('SHOW_LOGIN');
+	  	}.bind(this);
+
+	  	this.doLogout = function(){
+	  		RiotControl.trigger('LOGOUT');
+	  	}.bind(this)
+
+	  	this.onLoggedIn = function(){
+	  		console.log('logged in says appmenu');
+	  		this.currentUser = firebase.auth().currentUser;
+	  		this.update();
+	  	}.bind(this)
+
+		this.onUserUpdated = function(user){
+	  		console.log('logged in says appmenu');
+	  		this.currentUser = user;
+	  		this.update();
+		}.bind(this)
+
+	  	this.onLoggedOut = function(){
+	  		console.log('logged out says appmenu');
+	  		this.currentUser = null;
+	  		this.update();
+	  	}.bind(this)
+	  	this.on('LOGGED_IN', this.onLoggedIn);
+	  	this.on('LOGGED_OUT', this.onLoggedOut);
+	  	this.on('USER_UPDATED', this.onUserUpdated);
 });
-riot.tag2('login-email', '<form onsubmit="{doLogin}" if="{!doRegister}"><h2>Logga in</h2><span id="closeMe" onclick="{closeMe}">&#x2716;</span><div class="input-container"><div class="input-icon"><span class="input-group-addon"><i class="fa fa-envelope-o fa-fw" aria-hidden="true"></i></span><input type="text" name="email" placeholder="E-post"></div><div class="input-icon"><span class="input-group-addon"><i class="fa fa-key fa-fw" aria-hidden="true"></i></span><input type="password" name="password" placeholder="Lösenord"></div></div><input type="submit" value="Logga in"><input type="button" onclick="{switchToRegister}" value="Registrera"></form><register if="{doRegister}"></register>', '', '', function(opts) {
+riot.tag2('login-email', '<form onsubmit="{doLogin}" if="{!doRegister}"><h2>Logga in</h2><span id="closeMe" onclick="{closeMe}">&#x2716;</span><div class="input-container"><div class="error {hidden: !errorText}">{errorText}</div><div class="input-icon"><span class="input-group-addon"><i class="fa fa-envelope-o fa-fw" aria-hidden="true"></i></span><input type="text" name="email" class="{error: emailMissing}" placeholder="E-post"></div><div class="input-icon"><span class="input-group-addon"><i class="fa fa-key fa-fw" aria-hidden="true"></i></span><input type="password" name="password" class="{error: pwdMissing}" placeholder="Lösenord"></div></div><input type="submit" value="Logga in"><input type="button" onclick="{switchToRegister}" value="Registrera"></form><register if="{doRegister}"></register>', '', '', function(opts) {
 		var me  =this;
 		this.doRegister = false;
 		RiotControl.addStore(this);
-		this.errorList = [
-			{name:'email', required:true, errMess:'Ange e-post'},
-			{name:'password', required:true, errMess:'Ange lösenord'},
-		];
 
 		this.switchToRegister = function(){
 			this.doRegister = !this.doRegister;
@@ -46,6 +71,20 @@ riot.tag2('login-email', '<form onsubmit="{doLogin}" if="{!doRegister}"><h2>Logg
 
 	  			var errorCode = error.code;
 	  			var errorMessage = error.message;
+	  			console.log(errorCode);
+	  			if (errorCode=='auth/invalid-email'){
+	  				me.errorText = 'Felaktig e-post adress';
+	  			}
+	  			if(errorCode=='auth/user-disabled'){
+					me.errorText = 'Användaren avaktiverad';
+	  			}
+	  			if (errorCode=='auth/user-not-found'){
+	  				me.errorText = 'Användaren finns inte';
+	  			}
+	  			if (errorCode=='auth/wrong-password'){
+	  				me.errorText = 'Fel lösenord';
+	  			}
+	  			me.update();
 
 			});
 		}.bind(this)
@@ -55,7 +94,7 @@ riot.tag2('login-email', '<form onsubmit="{doLogin}" if="{!doRegister}"><h2>Logg
 		this.on('LOGGED_IN', this.onLoginSuccess);
 });
 
-riot.tag2('register', '<form onsubmit="{checkForm}" if="{currentStep==1}" class="form default"><h2>Registrera användare</h2><span id="closeMe" onclick="{closeMe}">&#x2716;</span><div class="error {hidden: !errorText}">Error</div><div class="input-container"><div class="input-icon"><span class="input-group-addon"><i class="fa fa-envelope-o fa-fw" aria-hidden="true"></i></span><input type="text" name="registerEmail" placeholder="E-post"></div><div class="input-icon"><span class="input-group-addon"><i class="fa fa-key fa-fw" aria-hidden="true"></i></span><input type="{password: !revealPassword, text: revealPassword}" name="registerPassword" placeholder="Lösenord"><span class="input-group-addon-right" onclick="{showPassword}"><i class="fa fa-eye" aria-hidden="true"></i></span></div></div><input type="submit" value="Registrera"></form><form onsubmit="{addUserInfo}" if="{currentStep==2}"><h2>Uppgifter</h2><span id="closeMe" onclick="{closeMe}">&#x2716;</span><div class="input-icon"><input type="text" name="registerAlias" placeholder="Alias"></div><div class="input-icon"><input type="text" name="registerFirstname" placeholder="Förnamn"></div><div class="input-icon"><input type="text" name="registerLastname" placeholder="Efternamn"></div><div class="input-icon"><input type="text" name="registerPhone" placeholder="Telefon"></div><input type="submit" value="Spara"></form><div if="{currentStep == 3}" class="registerFinished"><h2>Tack för din registrering!</h2><span id="closeMe" onclick="{closeMe}">&#x2716;</span><span>Klicka här för att komma till chatten!</span></div>', '', '', function(opts) {
+riot.tag2('register', '<form onsubmit="{checkForm}" if="{currentStep==1}" class="form default"><h2>Registrera användare</h2><span id="closeMe" onclick="{closeMe}">&#x2716;</span><div class="error {hidden: !errorText}">{errorText}</div><div class="input-container"><div class="input-icon"><span class="input-group-addon"><i class="fa fa-envelope-o fa-fw" aria-hidden="true"></i></span><input type="text" name="registerEmail" placeholder="E-post"></div><div class="input-icon"><span class="input-group-addon"><i class="fa fa-key fa-fw" aria-hidden="true"></i></span><input type="{password: !revealPassword, text: revealPassword}" name="registerPassword" placeholder="Lösenord"><span class="input-group-addon-right" onclick="{showPassword}"><i class="fa fa-eye" aria-hidden="true"></i></span></div></div><input type="submit" value="Registrera"></form><form onsubmit="{addUserInfo}" if="{currentStep==2}"><h2>Uppgifter</h2><span id="closeMe" onclick="{closeMe}">&#x2716;</span><div class="input-icon"><input type="text" name="registerAlias" placeholder="Alias"></div><div class="input-icon"><input type="text" name="registerFirstname" placeholder="Förnamn"></div><div class="input-icon"><input type="text" name="registerLastname" placeholder="Efternamn"></div><div class="input-icon"><input type="text" name="registerPhone" placeholder="Telefon"></div><input type="submit" value="Spara"></form><div if="{currentStep == 3}" class="registerFinished"><h2>Tack för din registrering!</h2><span id="closeMe" onclick="{closeMe}">&#x2716;</span><span>Klicka här för att komma till chatten!</span></div>', '', '', function(opts) {
 		me = this;
 		RiotControl.addStore(this);
 		this.errorText = '';
@@ -93,10 +132,17 @@ riot.tag2('register', '<form onsubmit="{checkForm}" if="{currentStep==1}" class=
 				return;
 			}).catch(function(error) {
 
+	  			console.log('error');
+	  			console.log(error);
 	  			var errorCode = error.code;
 	  			var errorMessage = error.message;
 	  			if (errorCode==='auth/email-already-in-use') {
-	  				errorText = 'E-post adressen finns redan.';
+	  				me.errorText = 'E-post adressen finns redan.';
+	  				me.update();
+	  				return;
+	  			}
+	  			if(errorCode==='auth/invalid-email'){
+	  				me.errorText = 'Ogiltig e-post adress.';
 	  				me.update();
 	  				return;
 	  			}

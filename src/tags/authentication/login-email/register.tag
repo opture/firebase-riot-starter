@@ -2,7 +2,7 @@
 	<form onsubmit="{checkForm}" if="{currentStep==1}" class="form default">
 		<h2>Registrera användare</h2>
 		<span id="closeMe" onclick="{closeMe}">&#x2716;</span>	
-		<div class="error {hidden: !errorText}">Error</div>
+		<div class="error {hidden: !errorText}">{errorText}</div>
 		<div class="input-container">
 			<div class="input-icon">
 				<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw" aria-hidden="true"></i></span>
@@ -83,10 +83,17 @@
 				return;				
 			}).catch(function(error) {
 	  			// Handle Errors here.
+	  			console.log('error');
+	  			console.log(error);
 	  			var errorCode = error.code;
 	  			var errorMessage = error.message;
 	  			if (errorCode==='auth/email-already-in-use') {
-	  				errorText = 'E-post adressen finns redan.';
+	  				me.errorText = 'E-post adressen finns redan.';
+	  				me.update();
+	  				return;
+	  			}
+	  			if(errorCode==='auth/invalid-email'){
+	  				me.errorText = 'Ogiltig e-post adress.';
 	  				me.update();
 	  				return;
 	  			}

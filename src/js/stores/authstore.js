@@ -9,6 +9,7 @@ var authStore = (function(){
 
 	this.onLogout = function(){
 		firebase.auth().signOut().then(function() {
+			dispatcher.trigger('LOGGED_OUT');
 		}, function(error) {
 		  // An error happened.
 		  console.log('Log out failed');
@@ -23,12 +24,9 @@ var authStore = (function(){
 
 	this.onRemoveLogin = function(){
 		if (me.loginTag){
-			console.log(me.loginTag);
-			console.log('unmounting stored tag');
 			me.loginTag[0].unmount();
 		}else{
 			var _loginTag = document.querySelector('login-email');
-			console.log('unmounting not stored tag');
 			_loginTag._tag.unmount();
 
 		}
@@ -37,8 +35,6 @@ var authStore = (function(){
 	firebase.auth().onAuthStateChanged(function(user) {
   		if (user) {
     		// User is signed in.
-    		console.log('store says user is logged in');
-    		console.log(user);
     		RiotControl.trigger('LOGGED_IN');
   		} else {
     		// No user is signed in.

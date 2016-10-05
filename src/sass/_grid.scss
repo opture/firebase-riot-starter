@@ -6,6 +6,7 @@
 	background:$container-background;
 	&.full-width{
 		width: 100%;
+
 	}
 	&.pad{
 		margin:$container-margin-top-bottom auto;
@@ -35,6 +36,8 @@
 	&.page-holder{
 		height:100%;
 		padding-top:$content-top-padding;
+		overflow:hidden;
+		overflow-y:auto;
 	}
 }
 .flex-column{

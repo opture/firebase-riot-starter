@@ -16,6 +16,7 @@ var userStore = (function(){
 		}).then(function() {
 		  // Update successful.
 		  console.log('user updated');
+		  dispatcher.trigger('USER_UPDATED', user);
 		}, function(error) {
 		  // An error happened.
 		  console.log('user update error');
