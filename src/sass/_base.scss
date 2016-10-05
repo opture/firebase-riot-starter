@@ -1,0 +1,19 @@
+body,html{
+	width: 100%;
+	height: 100%;
+}
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+.hidden{
+	display:none;
+}
+form{
+	display:block;
+	&.default{
+		
+	}
+}

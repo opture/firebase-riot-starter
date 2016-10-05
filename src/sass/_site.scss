@@ -1,0 +1,14 @@
+$default-button-background: linear-gradient(to bottom, #88bec8 0%, #3592b9 100%);
+$default-button-color:rgba(255,255,255,.87);
+body{
+	background-color: silver;
+}
+button, input[type="button"], input[type="submit"]{
+	background-image:$default-button-background;
+	color:$default-button-color;
+	padding:.5rem;
+	border-radius:.25rem;
+	max-width:100%;
+	overflow:hidden;
+	width:100%;
+}

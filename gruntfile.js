@@ -51,12 +51,12 @@ module.exports = function(grunt) {
             },
             build: {
                 files: {
-                    'dev/js/site.min.js': ['.tmp/js/compiled.js']
+                    'dev/js/site.min.js': ['.tmp/js/<%= pkg.name %>.js']
                 }
             },
             dist: {
                 files: {
-                    'dist/js/site.min.js': ['.tmp/js/compiled.js']
+                    'dist/js/site.min.js': ['.tmp/js/<%= pkg.name %>.js']
                 }
             }
         },
@@ -150,11 +150,11 @@ module.exports = function(grunt) {
             },
             js: {
                 files: 'src/**/*.js',
-                tasks: ['concat:build','babel', 'uglify:build']
+                tasks: ['concat:build', 'uglify:build']
             },
             riottags: {
                 files: ['src/tags/**/*.tag'],
-                tasks: ['riot', 'uglify'],
+                tasks: ['riot','concat:build', 'uglify:build'],
                 options: {}
             },            
             html: {
@@ -189,7 +189,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-babel');
     
 
-    grunt.registerTask('dev', ['sass_globbing','riot','copy:build','concat:build','babel', 'sass:build', 'postcss:build', 'uglify:build', 'htmlmin:build', 'connect', 'watch']);
+    grunt.registerTask('dev', ['sass_globbing','riot','copy:build','concat:build', 'sass:build', 'postcss:build', 'uglify:build', 'htmlmin:build', 'connect', 'watch']);
     grunt.registerTask('dist', ['copy:dist', 'sass:dist', 'postcss:dist', 'concat:dist', 'uglify:dist', 'htmlmin:dist']);
 
 };

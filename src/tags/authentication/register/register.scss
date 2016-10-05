@@ -1,8 +1,15 @@
 register{
 	display:block;
+	width:18rem;
+	margin:0 auto;
 	position:relative;
 	input{
+		display:block;
 		border:none;
 		outline:none;
 	}
+	label{
+		display:block;
+	}
+	
 }
