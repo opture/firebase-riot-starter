@@ -35,6 +35,70 @@ riot.tag2('appmenu', '<nav class="topmenu"><ul><li><a href="#">Om oss</a></li><l
 	  	this.on('LOGGED_OUT', this.onLoggedOut);
 	  	this.on('USER_UPDATED', this.onUserUpdated);
 });
+riot.tag2('add-user', '<form onsubmit="{checkForm}" class="form default"><h2>Registrera användare</h2><span id="closeMe" onclick="{closeMe}">&#x2716;</span><div class="error {hidden: !errorText}">{errorText}</div><div class="input-container"><div class="input-icon"><span class="input-group-addon"><i class="fa fa-envelope-o fa-fw" aria-hidden="true"></i></span><input type="text" name="registerEmail" placeholder="E-post"></div><div class="input-icon"><span class="input-group-addon"><i class="fa fa-key fa-fw" aria-hidden="true"></i></span><input type="{password: !revealPassword, text: revealPassword}" name="registerPassword" placeholder="Lösenord"><span class="input-group-addon-right" onclick="{showPassword}"><i class="fa fa-eye" aria-hidden="true"></i></span></div><div class="input-icon"><input type="text" name="registerAlias" placeholder="Alias"></div><div class="input-icon"><input type="text" name="registerFirstname" placeholder="Förnamn"></div><div class="input-icon"><input type="text" name="registerLastname" placeholder="Efternamn"></div><div class="input-icon"><input type="text" name="registerPhone" placeholder="Telefon"></div></div><input type="submit" value="Spara"></form>', '', '', function(opts) {
+		var me  =this;
+		this.doRegister = false;
+		RiotControl.addStore(this);
+
+		this.checkForm = function(e){
+			e.preventDefault();
+			if (!e.target.registerEmail.value){
+				alert('No User name');
+				return;
+			}
+			if (!e.target.registerPassword.value){
+				alert('No password');
+				return;
+			}
+			this.registerUser(e.target.registerEmail.value,e.target.registerPassword.value,e);
+		}.bind(this)
+
+		this.registerUser = function(email,password,e){
+
+			fetch('https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyDfdZH8ubnnu9Kuy1sj4HWe1oQcNomII4Y', {
+			  method: 'POST',
+			  headers: {
+			    'Accept': 'application/json',
+			    'Content-Type': 'application/json'
+			  },
+			  body: JSON.stringify({
+			    email: email,
+			    password: password,
+			    returnSecureToken:true
+			  })
+			}).then(function(response) {
+    			return response.json()
+  			}).then(function(json) {
+
+				var userId = json.localId;
+
+				var userData = {
+					alias: e.target.registerAlias.value,
+					firstname: e.target.registerFirstname.value,
+					lastname: e.target.registerLastname.value,
+					phone: e.target.registerPhone.value,
+
+				};
+
+			  	firebase.database().ref('users/' + userId).update(userData);
+
+				user.updateProfile({
+				  displayName: displayName
+				}).then(function() {
+
+				  console.log('user updated');
+				}, function(error) {
+
+				  console.log('user update error');
+				  console.log(error);
+				});
+
+  			}).catch(function(ex) {
+    			console.log('parsing failed', ex)
+  			});
+
+		}.bind(this)
+});
 riot.tag2('login-email', '<form onsubmit="{doLogin}" if="{!doRegister}"><h2>Logga in</h2><span id="closeMe" onclick="{closeMe}">&#x2716;</span><div class="input-container"><div class="error {hidden: !errorText}">{errorText}</div><div class="input-icon"><span class="input-group-addon"><i class="fa fa-envelope-o fa-fw" aria-hidden="true"></i></span><input type="text" name="email" class="{error: emailMissing}" placeholder="E-post"></div><div class="input-icon"><span class="input-group-addon"><i class="fa fa-key fa-fw" aria-hidden="true"></i></span><input type="password" name="password" class="{error: pwdMissing}" placeholder="Lösenord"></div></div><input type="submit" value="Logga in"><input type="button" onclick="{switchToRegister}" value="Registrera"></form><register if="{doRegister}"></register>', '', '', function(opts) {
 		var me  =this;
 		this.doRegister = false;
@@ -46,6 +110,22 @@ riot.tag2('login-email', '<form onsubmit="{doLogin}" if="{!doRegister}"><h2>Logg
 		this.closeMe = function(){
 			me.unmount();
 		}.bind(this)
+
+		this.setError = function(errorCode){
+  			if (errorCode=='auth/invalid-email'){
+  				me.errorText = 'Felaktig e-post adress';
+  			}
+  			if(errorCode=='auth/user-disabled'){
+				me.errorText = 'Användaren avaktiverad';
+  			}
+  			if (errorCode=='auth/user-not-found'){
+  				me.errorText = 'Användaren finns inte';
+  			}
+  			if (errorCode=='auth/wrong-password'){
+  				me.errorText = 'Fel lösenord';
+  			}
+  			me.update();
+		}.bind(this);
 
 		this.doLogin = function(e){
 			var email = e.target.email.value,
@@ -70,22 +150,7 @@ riot.tag2('login-email', '<form onsubmit="{doLogin}" if="{!doRegister}"><h2>Logg
 			}).catch(function(error) {
 
 	  			var errorCode = error.code;
-	  			var errorMessage = error.message;
-	  			console.log(errorCode);
-	  			if (errorCode=='auth/invalid-email'){
-	  				me.errorText = 'Felaktig e-post adress';
-	  			}
-	  			if(errorCode=='auth/user-disabled'){
-					me.errorText = 'Användaren avaktiverad';
-	  			}
-	  			if (errorCode=='auth/user-not-found'){
-	  				me.errorText = 'Användaren finns inte';
-	  			}
-	  			if (errorCode=='auth/wrong-password'){
-	  				me.errorText = 'Fel lösenord';
-	  			}
-	  			me.update();
-
+	  			me.setError(errorCode)
 			});
 		}.bind(this)
 		this.onLoginSuccess = function(){
@@ -155,7 +220,8 @@ riot.tag2('register', '<form onsubmit="{checkForm}" if="{currentStep==1}" class=
 				alias: e.target.registerAlias.value,
 				firstname: e.target.registerFirstname.value,
 				lastname: e.target.registerLastname.value,
-				phone: e.target.registerPhone.value
+				phone: e.target.registerPhone.value,
+				role: 'user'
 			};
 
 			RiotControl.trigger('UPDATE_USER', user);
@@ -167,6 +233,8 @@ riot.tag2('register', '<form onsubmit="{checkForm}" if="{currentStep==1}" class=
 			}, 3500);
 			return;
 		}.bind(this)
+});
+riot.tag2('firebase-chat', '<div id="messages"></div>', '', '', function(opts) {
 });
 riot.tag2('juro-input', '<input class="input__field input__field--juro" type="{type}" name="{name}" value="{value}" id="juro-1"><label class="input__label input__label--juro" for="juro-1"><span class="input__label-content input__label-content--juro" data-content="{label}">{label}</span></label>', '', '', function(opts) {
 		var self = this;

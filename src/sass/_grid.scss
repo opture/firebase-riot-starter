@@ -4,6 +4,7 @@
 	width:calc(100% - #{$container-margin-left-right * 2});
 	margin:0 auto;
 	background:$container-background;
+	position:relative;
 	&.full-width{
 		width: 100%;
 

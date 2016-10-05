@@ -8,7 +8,8 @@ var userStore = (function(){
 		var user = firebase.auth().currentUser,
 			displayName = '';
 			displayName = userData.alias || userData.firstname + ' ' + userData.lastname;
-
+			userData.email = user.email;
+			
 	  	firebase.database().ref('users/' + user.uid).update(userData);
 
 		user.updateProfile({

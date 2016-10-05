@@ -106,7 +106,8 @@
 				alias: e.target.registerAlias.value,
 				firstname: e.target.registerFirstname.value,
 				lastname: e.target.registerLastname.value,
-				phone: e.target.registerPhone.value
+				phone: e.target.registerPhone.value,
+				role: 'user'
 			};
 
 

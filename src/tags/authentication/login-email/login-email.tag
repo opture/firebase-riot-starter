@@ -33,6 +33,23 @@
 			me.unmount();
 		}
 
+		setError(errorCode){
+  			if (errorCode=='auth/invalid-email'){
+  				me.errorText = 'Felaktig e-post adress';
+  			}
+  			if(errorCode=='auth/user-disabled'){
+				me.errorText = 'Användaren avaktiverad';
+  			}
+  			if (errorCode=='auth/user-not-found'){
+  				me.errorText = 'Användaren finns inte';
+  			}
+  			if (errorCode=='auth/wrong-password'){
+  				me.errorText = 'Fel lösenord';
+  			}
+  			me.update();
+		};
+
+
 		doLogin(e){
 			var email = e.target.email.value,
 				password = e.target.password.value;
@@ -56,22 +73,7 @@
 			}).catch(function(error) {
 	  			// Handle Errors here.
 	  			var errorCode = error.code;
-	  			var errorMessage = error.message;
-	  			console.log(errorCode);
-	  			if (errorCode=='auth/invalid-email'){
-	  				me.errorText = 'Felaktig e-post adress';
-	  			}
-	  			if(errorCode=='auth/user-disabled'){
-					me.errorText = 'Användaren avaktiverad';
-	  			}
-	  			if (errorCode=='auth/user-not-found'){
-	  				me.errorText = 'Användaren finns inte';
-	  			}
-	  			if (errorCode=='auth/wrong-password'){
-	  				me.errorText = 'Fel lösenord';
-	  			}
-	  			me.update();
-	  			// ...
+	  			me.setError(errorCode)
 			});
 		}
 		onLoginSuccess(){
