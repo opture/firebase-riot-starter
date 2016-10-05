@@ -5,26 +5,31 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Duktus">
 	<title>Document</title>
-
-  <register></register>
+    
+    <div class="container large page-holder">
+    123
+    </div>
+    <appmenu></appmenu>
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/riot/2.6.2/riot.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
-<script src="js/site.min.js"></script>
 <script>
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyC2QnjfkkRltw7iKGPooxFk4VNmG9IzGrQ",
-    authDomain: "duktusweb.firebaseapp.com",
-    databaseURL: "https://duktusweb.firebaseio.com",
-    storageBucket: "duktusweb.appspot.com",
-    messagingSenderId: "661748355841"
+    apiKey: "AIzaSyDfdZH8ubnnu9Kuy1sj4HWe1oQcNomII4Y",
+    authDomain: "riot-starter.firebaseapp.com",
+    databaseURL: "https://riot-starter.firebaseio.com",
+    storageBucket: "riot-starter.appspot.com",
+    messagingSenderId: "310874526752"
   };
   firebase.initializeApp(config);
+   var database = firebase.database();
 </script>
+<script src="js/site.min.js"></script>
 <script>
   riot.mount('*');
+
 </script>
 
 <script src="//localhost:35729/livereload.js"></script>

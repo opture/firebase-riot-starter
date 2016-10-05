@@ -1,3 +1,97 @@
-login-email{
+$header-height: 2.75rem;
 
+login-email{
+	display:flex;
+	position:fixed;
+	top:0;
+	right:0;
+	bottom:0;
+	left:0;
+	background-color: rgba(0,0,0,.3);
+	padding:.5rem;
+	justify-content:center;
+	align-items:center;
+	z-index:999;
+	animation: fadein .3s linear;
+	form, div.registerFinished{
+		padding:2rem;
+		padding-top:3.5rem;
+		background:#ededed;
+		max-width:20rem;
+		width:calc(100% - 1rem);
+		position:relative;
+		border-radius:.25rem;
+		h2{
+			position:absolute;
+			top:0;
+			left:0;
+			right:0;
+			height:$header-height;
+			line-height:$header-height;
+			margin: 0;
+			padding: 0 .75rem;
+			background:$default-button-background;
+			color:rgba(255,255,255,0.87);
+			border-top-left-radius:.25rem;
+			border-top-right-radius:.25rem;
+			font-size:.75rem;
+		}
+		#closeMe{
+			color:rgba(255,255,255,0.87);
+			position:absolute;
+			right:0;
+			top:0;
+			height:$header-height;
+			line-height:$header-height;
+			width:$header-height;
+			text-align:center;
+		}
+		input[type="text"], input[type="password"], input[type="email"]{
+			display:block;
+			padding:.5rem;
+			outline:none;
+			border:1px solid rgb(199,199,199);
+			margin:1px 0;
+			margin:0 auto;
+			width:100%;
+			padding-left:2.5rem;	
+			border-radius:.25rem;
+		}
+		.input-container{
+			margin-bottom:2rem;
+		}
+		.input-icon{
+			position:relative;
+			margin:1rem auto; 
+			.input-group-addon{
+				display:flex;
+				position:absolute;
+				width:2rem;
+				font-size:1.2rem;
+				height:100%;
+				background:silver;
+				color:white;
+				justify-content:centeR;
+				align-items:center;
+			}
+			.input-group-addon-right{
+				display:flex;
+				position:absolute;
+				width:2rem;
+				font-size:1.2rem;
+				height:100%;
+				color:rgba(0,0,0,0.57);
+				justify-content:centeR;
+				align-items:center;
+				top:0;
+				right:0;
+			}			
+		}
+
+	}
+	
+}
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }

@@ -127,16 +127,14 @@ module.exports = function(grunt) {
         copy: {
           dist: {
             files:[
-              {expand: true, cwd:'src', src: ['fonts/*/**','img/*/**','video/*/**'],dest: 'dist/'},
+              {expand: true, cwd:'src', src: ['fonts/**','img/**','video/**'],dest: 'dist/'},
               {expand: true, cwd:'src', src: ['js/bootstrap.js'],dest: 'dist/'},
               {expand: true, cwd:'src', src: ['js/jquery-3.1.0.js'],dest: 'dist/'},
             ]
           },
           build: {
             files:[
-              {expand: true, cwd:'src', src: ['fonts/*/**','img/*/**','video/*/**'],dest: 'dev/'},
-              {expand: true, cwd:'src', src: ['js/bootstrap.js'],dest: 'dev/'},
-              {expand: true, cwd:'src', src: ['js/jquery-3.1.0.js'],dest: 'dev/'},
+              {expand: true, cwd:'src', src: ['fonts/**','img/**','video/**'],dest: 'dev/'},
             ]
           }
         },

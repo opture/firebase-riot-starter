@@ -1,0 +1,39 @@
+appmenu{
+		position:fixed;
+		top:0;
+		left:0;	
+		height:$top-menu-height;
+		background-color:white;
+		box-shadow: 0 8px 12px -6px rgba(0,0,0,.4);
+		width:100%;
+		display:flex;
+		justify-content:flex-end;
+		font-size:$top-menu-font-size;
+	nav.topmenu{
+		ul{
+			list-style:none;
+			padding: 0;
+			margin: 0;
+			height: $top-menu-height;
+			
+			> li{
+				padding:0 1rem;
+				display:inline-block;
+				height:$top-menu-height;
+				line-height:$top-menu-height;
+				text-transform: uppercase;
+			}
+
+			a{
+				color:inherit;
+				text-decoration: none;
+				&:hover{
+					text-decoration:underline;
+					color:inherit;
+				}
+			}
+		}
+
+
+	}
+}

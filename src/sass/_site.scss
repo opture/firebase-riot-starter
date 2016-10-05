@@ -1,7 +1,6 @@
-$default-button-background: linear-gradient(to bottom, #88bec8 0%, #3592b9 100%);
-$default-button-color:rgba(255,255,255,.87);
+
 body{
-	background-color: silver;
+	background-color: $body-background;
 }
 button, input[type="button"], input[type="submit"]{
 	background-image:$default-button-background;

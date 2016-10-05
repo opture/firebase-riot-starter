@@ -1,24 +1,55 @@
 var authStore = (function(){
 	var _store = {},
-		dispatcher = RiotControl;
+		me = this,
+		dispatcher = RiotControl,
+		loginTag = null;
 
-	dispatcher.addStore(_store);
-	function onLogin (email,password){
-		if (!email || !password){
-			return;
-		}
-		firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-		  // Handle Errors here.
-		  var errorCode = error.code;
-		  var errorMessage = error.message;
-		  dispatcher.trigger('LOGIN_FAILED', errorCode);
-		});		
+	riot.observable(_store);
+	RiotControl.addStore(_store);
 
+	this.onLogout = function(){
+		firebase.auth().signOut().then(function() {
+		}, function(error) {
+		  // An error happened.
+		  console.log('Log out failed');
+		});
 	}
 
-	_store.on('LOGIN', this.onLogin);
-	_store.on('REGISTER', this.onRegister);
-	_store.on('USER_REGISTERED', this.onRegistered);
+	this.onShowLogin = function(){
+		var loginWindow = document.createElement('login-email');
+		document.body.appendChild(loginWindow);
+		me.loginTag = riot.mount('login-email');
+	};
 
+	this.onRemoveLogin = function(){
+		if (me.loginTag){
+			console.log(me.loginTag);
+			console.log('unmounting stored tag');
+			me.loginTag[0].unmount();
+		}else{
+			var _loginTag = document.querySelector('login-email');
+			console.log('unmounting not stored tag');
+			_loginTag._tag.unmount();
+
+		}
+	};
+
+	firebase.auth().onAuthStateChanged(function(user) {
+  		if (user) {
+    		// User is signed in.
+    		console.log('store says user is logged in');
+    		console.log(user);
+    		RiotControl.trigger('LOGGED_IN');
+  		} else {
+    		// No user is signed in.
+    		RiotControl.trigger('LOGGED_OUT');
+  		}
+	});
+
+
+	
+	_store.on('LOGOUT', this.onLogout);
+	_store.on('SHOW_LOGIN', this.onShowLogin);
+	_store.on('REMOVE_LOGIN', this.onRemoveLogin);
 	return _store;
 })();

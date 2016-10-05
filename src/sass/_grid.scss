@@ -1,21 +1,12 @@
-$container-margin-top-bottom: 1rem;
-$container-margin-left-right: .5rem;
 
-$col-margin-left-right: .5rem;
-$col-margin-top-bottom: .25rem;
-
-$lg-col-margin-left-right: .5rem;
-$lg-col-margin-top-bottom: .25rem;
-
-$md-col-margin-left-right: .5rem;
-$md-col-margin-top-bottom: .25rem;
-
-$sm-col-margin-left-right: .5rem;
-$sm-col-margin-top-bottom: .25rem;
 
 .container{
 	width:calc(100% - #{$container-margin-left-right * 2});
 	margin:0 auto;
+	background:$container-background;
+	&.full-width{
+		width: 100%;
+	}
 	&.pad{
 		margin:$container-margin-top-bottom auto;
 		width:calc(100% - #{$container-margin-left-right * 2});
@@ -41,7 +32,10 @@ $sm-col-margin-top-bottom: .25rem;
 	&.screen-height{
 		height: 100vh;
 	}
-
+	&.page-holder{
+		height:100%;
+		padding-top:$content-top-padding;
+	}
 }
 .flex-column{
 	display:flex;
